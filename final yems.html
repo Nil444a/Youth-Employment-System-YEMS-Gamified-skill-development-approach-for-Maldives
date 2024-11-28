@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YEMS - Youth Employment System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+    <style>
+        :root {
+            --primary: #4aa5e2;
+            --secondary: #50C878;
+            --background: #f5f7fa;
+            --text: #333;
+            --shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            padding: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            padding: 1rem;
+            background: white;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .profile-section {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #eee;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-image:hover::after {
+            content: 'Change Photo';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: var(--background);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 0.25rem;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .course-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--secondary);
+            border-radius: 4px;
+        }
+
+        .job-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .job-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            opacity: 0.9;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .course-content {
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 4px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .course-content.active {
+            display: block;
+        }
+        .leaderboard-table {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    background: var(--background);
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: var(--shadow);
+}
+
+.leaderboard-header {
+    display: grid;
+    grid-template-columns: 50px 1fr 100px 100px;
+    font-weight: bold;
+    background: var(--primary);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.leaderboard-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 100px 100px;
+    background: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s;
+}
+
+.leaderboard-row:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    </style>
+</head>
+<body>
+    <div class="logo">YEMS-Youth Employment System</div>
+    
+    
+    <nav class="nav-links">
+        <a href="#courses">Courses</a>
+        <a href="#jobs">Jobs</a>
+        <a href="#profile">Profile</a>
+    </nav>
+
+    <main>
+        <section id="profile" class="section">
+            <h2>Profile</h2>
+            <div class="profile-section">
+                <div>
+                    <div class="profile-image" id="profileImage">
+                        <img src="/api/placeholder/150/150" alt="Profile" id="profilePic">
+                    </div>
+                    <button class="button" id="editProfileBtn" style="margin-top: 1rem;">Edit Profile</button>
+                </div>
+                <div>
+                    <h3 id="profileName">Ahmed Nahil</h3>
+                    <p id="profileTitle">Warrior</p>
+                    <div class="stats">
+                        <div class="stat-card">
+                            <h4>Level</h4>
+                            <p>15</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>XP Points</h4>
+                            <p>2,450</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Courses</h4>
+                            <p>8</p>
+                        </div>
+                    </div>
+                    <h4 style="margin-top: 1rem;">Achievements</h4>
+                    <div class="achievements">
+                        <span class="badge">Python Master</span>
+                        <span class="badge">React Expert</span>
+                        <span class="badge">Speed Typer</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="courses" class="section">
+            <h2>Your Learning Path</h2> <p>- choose your course</p>
+            <div class="courses-grid">
+                <div class="course-card" data-course="python">
+                    <h3>Python Fundamentals</h3>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 75%"></div>
+                    </div>
+                    <p>Progress: 75%</p>
+                    <button class="button">Continue</button>
+                    <div class="course-content">
+                        <h4>Course Modules:</h4>
+                        <ul>
+                            <li>Business English</li>
+                            <li>Dhivehi typing</li>
+                            <li>Active listening</li>
+                            <li>Time Management</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="course-card" data-course="react">
+                    <h3>Cooperate Communications</h3>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 45%"></div>
+                    </div>
+                    <p>Progress: 45%</p>
+                    <button class="button">Continue</button>
+                    <div class="course-content">
+                        <h4>Course Modules:</h4>
+                        <ul>
+                            <li>React Basics</li>
+                            <li>Components and Props</li>
+                            <li>State and Lifecycle</li>
+                            <li>Hooks and Custom Hooks</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="course-card" data-course="database">
+                    <h3>Dhivehi typing</h3>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 30%"></div>
+                    </div>
+                    <p>Progress: 30%</p>
+                    <button class="button">Continue</button>
+                    <div class="course-content">
+                        <h4>Course Modules:</h4>
+                        <ul>
+                            <li>Database Fundamentals</li>
+                            <li>SQL Basics</li>
+                            <li>Database Normalization</li>
+                            <li>Advanced Queries</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="jobs" class="section">
+            <h2>Recommended Jobs</h2>
+            <div class="job-list">
+                <div class="job-card">
+                    <h3>Senior Full Stack Developer</h3>
+                    <p>TechCorp Inc.</p>
+                    <p>Skills match: 85%</p>
+                    <button class="button">Apply Now</button>
+                </div>
+                <div class="job-card">
+                    <h3>Python Developer</h3>
+                    <p>Innovation Labs</p>
+                    <p>Skills match: 92%</p>
+                    <button class="button">Apply Now</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    <section id="leaderboard" class="section">
+        <h2>Leaderboard</h2>
+        <div class="leaderboard-table">
+            <div class="leaderboard-header">
+                <span>#</span>
+                <span>Name</span>
+                <span>Level</span>
+                <span>XP Points</span>
+            </div>
+            <div class="leaderboard-row">
+                <span>1</span>
+                <span>Ahmed Nahil</span>
+                <span>15</span>
+                <span>2450</span>
+            </div>
+            <div class="leaderboard-row">
+                <span>2</span>
+                <span>Zara Fathimath</span>
+                <span>14</span>
+                <span>2300</span>
+            </div>
+            <div class="leaderboard-row">
+                <span>3</span>
+                <span>Hassan Moosa</span>
+                <span>13</span>
+                <span>2150</span>
+            </div>
+        </div>
+    </section>
+    
+
+    <!-- Profile Edit Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <h2>Edit Profile</h2>
+            <form id="profileForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" value="Ahmed Nahil">
+                </div>
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" value="Warrior">
+                </div>
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <input type="text" id="bio" placeholder="Tell us about yourself">
+                </div>
+                <button type="submit" class="button">Save Changes</button>
+                <button type="button" class="button" style="background: #666;" id="cancelEdit">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+        const editProfileBtn = document.getElementById('editProfileBtn');
+        const profileModal = document.getElementById('profileModal');
+        const profileForm = document.getElementById('profileForm');
+        const cancelEdit = document.getElementById('cancelEdit');
+        const profileImage = document.getElementById('profileImage');
+        const profileName = document.getElementById('profileName');
+        const profileTitle = document.getElementById('profileTitle');
+
+        editProfileBtn.addEventListener('click', () => {
+            profileModal.classList.add('active');
+        });
+
+        cancelEdit.addEventListener('click', () => {
+            profileModal.classList.remove('active');
+        });
+
+        profileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newName = document.getElementById('name').value;
+            const newTitle = document.getElementById('title').value;
+            
+            profileName.textContent = newName;
+            profileTitle.textContent = newTitle;
+            
+            profileModal.classList.remove('active');
+        });
+
+        // Profile image upload simulation
+        profileImage.addEventListener('click', () => {
+            alert('Image upload functionality would be implemented here');
+        });
+
+        // Course interaction
+        const courseCards = document.querySelectorAll('.course-card');
+        
+        courseCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('button')) {
+                    const content = this.querySelector('.course-content');
+                    content.classList.toggle('active');
+                }
+            });
+
+            const continueBtn = card.querySelector('.button');
+            continueBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const courseName = card.querySelector('h3').textContent;
+                alert(`Launching ${courseName} course content...`);
+            });
+        });
+
+        
+        const jobButtons = document.querySelectorAll('.job-card .button');
+        
+        jobButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const jobTitle = button.parentElement.querySelector('h3').textContent;
+                const company = button.parentElement.querySelector('p').textContent;
+                alert(`Applying for ${jobTitle} at ${company}...\nApplication form would open here.`);
+            });
+        });
+
+      
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        const leaderboardData = [
+    { rank: 1, name: 'Ahmed Nahil', level: 15, xp: 2450 },
+    { rank: 2, name: 'Zara Fathimath', level: 14, xp: 2300 },
+    { rank: 3, name: 'Hassan Moosa', level: 13, xp: 2150 },
+];
+
+const leaderboardTable = document.querySelector('.leaderboard-table');
+
+
+function populateLeaderboard(data) {
+    data.forEach(user => {
+        const row = document.createElement('div');
+        row.classList.add('leaderboard-row');
+        row.innerHTML = `
+            <span>${user.rank}</span>
+            <span>${user.name}</span>
+            <span>${user.level}</span>
+            <span>${user.xp}</span>
+        `;
+        leaderboardTable.appendChild(row);
+    });
+}
+
+
+leaderboardData.sort((a, b) => b.xp - a.xp);
+populateLeaderboard(leaderboardData);
+
+    </script>
+</body>
+</html>
